@@ -33,15 +33,21 @@
   </template>
   
   <script>
+  import modalAddFile from '../modules/AddFileModal.vue';
   export default {
-    data() {
-        return {
-            pixelColor: "",
-            pixelCoordinates: "",
-            imageWidth: 0,
-            imageHeight: 0,
-            lastClickedColor: "",
-            lastClickedCoordinates: ""
+    components: {
+        modalAddFile,
+    },
+
+        data() {
+            return {
+                pixelColor: "",
+                pixelCoordinates: "",
+                imageWidth: 0,
+                imageHeight: 0,
+                lastClickedColor: "",
+                lastClickedCoordinates: "",
+                isModalVisible: false,
         };
     },
     mounted() {
@@ -64,6 +70,12 @@
         }
     },
     methods: {
+        showModal_AddFile() {
+            this.isModalVisible = true;
+        },
+        closeModal_AddFile() {
+            this.isModalVisible = false;
+        },
         handleMouseMove(event) {
             const canvas = this.$refs.canvas;
             const ctx = canvas.getContext("2d");
@@ -72,7 +84,7 @@
             const y = event.clientY - rect.top;
             const pixelData = ctx.getImageData(x, y, 1, 1).data;
             this.pixelColor = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`;
-            this.pixelCoordinates = `(${x}, ${y})`;
+            this.pixelCoordinates = `(${Math.round(x)}, ${Math.round(y)})`;
         },
         handleCanvasClick(event) {
             const canvas = this.$refs.canvas;
@@ -82,7 +94,7 @@
             const y = event.clientY - rect.top;
             const pixelData = ctx.getImageData(x, y, 1, 1).data;
             this.lastClickedColor = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`;
-            this.lastClickedCoordinates = `(${x}, ${y})`;
+            this.lastClickedCoordinates = `(${Math.round(x)}, ${Math.round(y)})`;
             const color = this.$refs.color; 
             color.style.backgroundColor = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`;
         }
@@ -103,7 +115,35 @@
   </script>
   
   <style>
+  ol, ul {
+    list-style: none;
+}
+.add-image {
+    margin: 0;
+}
+.menu {
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+}
+.menu-button {
+    height: 25px;
+    border: 2px solid black;
+    padding: 3px;
+    border-radius: 3px;
+}
+.menu-elem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.bottom-elem {
+    height: 50px;
+}
   .info-panel {
+    tab-size: 5px;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -115,7 +155,7 @@
 }
 .top-panel {
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     justify-content: center;
     align-items: center;
 }
@@ -129,8 +169,13 @@
     height: 20px;
     border: 3px solid black;
 }
-p {
+.top-panel-text{
+    margin: 0;
     margin-left: 10px;
 }
+.canvas{
+    margin-bottom: 150px;
+}
+
   </style>
   
