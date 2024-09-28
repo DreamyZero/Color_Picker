@@ -1,22 +1,35 @@
 <template>
    <div>
+        <div class="header">
+            <ul class="menu">
+                <li class="menu-elem menu-button"  v-on:click="showModal_AddFile">
+                    <p class="add-image">Добавить изображение</p>
+                </li>
+                <li class="menu-elem">
+                    <div class="bottom-panel">
+                        <p class="top-panel-text">Выбранный пиксель:</p>
+                        <p class="top-panel-text">Цвет: {{ lastClickedColor }}</p>
+                        <div class="color" ref="color"></div>
+                        <p class="top-panel-text">Координаты: {{ lastClickedCoordinates }}</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <modalAddFile v-show="isModalVisible" @close="closeModal_AddFile"></modalAddFile>
         <canvas ref="canvas" width="500" height="500" @mousemove="handleMouseMove" @click="handleCanvasClick"></canvas>
+        <div class="bottom-elem"></div>
         <div class="info-panel">
             <div class="top-panel">
-                <p>Информация о пикселе:</p>
-                <p>Цвет: {{ pixelColor }}</p>
-                <p>Координаты: {{ pixelCoordinates }}</p>
-                <p>Ширина изображения: {{ imageWidth }}px</p>
-                <p>Высота изображения: {{ imageHeight }}px</p>
+                <p class="top-panel-text">Информация о пикселе:</p>
+                <p class="top-panel-text">Цвет: {{ pixelColor }}</p>
+                <p class="top-panel-text">Координаты (x,y): {{ pixelCoordinates }}</p>
+                <p class="top-panel-text">Изображение ширина : {{ imageWidth }} px</p>
+                <p class="top-panel-text">высота : {{ imageHeight }} px</p>
             </div>
-            <div class="bottom-panel">
-                <p>Выбранный пиксель:</p>
-                <p>Цвет: {{ lastClickedColor }}</p>
-                <div class="color" ref="color"></div>
-                <p>Координаты: {{ lastClickedCoordinates }}</p>
-            </div>
+            
         </div>
-      </div>
+    </div>
+
   </template>
   
   <script>
