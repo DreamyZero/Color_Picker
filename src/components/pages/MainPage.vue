@@ -38,6 +38,7 @@
             }
         },
         navigateToRedactorPage() {
+            localStorage.setItem("isResisedCanWr", false);
             this.$router.push('/redactor');
         }
     }
