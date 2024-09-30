@@ -76,9 +76,8 @@ data() {
 },
 methods: {
   handleSubmitt(){
-      console.log("SHTO?")
+      console.log("yes?")
       const imageData = localStorage.getItem("start_image");
-      // console.log("imageData2",imageData2)
       const canvas = document.getElementById('prewCanvas');
       const ctx = canvas.getContext('2d');
       const img = new Image();
@@ -93,7 +92,7 @@ methods: {
           // Масштабируем и рисуем изображение
           ctx.drawImage(img, 0, 0, imageWidth, imageHeight );
           const imageData2 = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          console.log("Я сюда попал?",canvas.width)
+          console.log("verno?",canvas.width)
           console.log("canvas.width",canvas.width)
           const data = imageData2.data;
           let mass
@@ -160,14 +159,13 @@ methods: {
           // Загружаем изображение
       
       img.src = imageData;
-      // this.changePixelColors();
       location.reload();
   },
   calcCanvas(){
-      if (this.showCanvas == "DA"){
+      if (this.showCanvas == "yes"){
           this.showCanvas = ""
       } else {
-          this.showCanvas = "DA"
+          this.showCanvas = "yes"
           this.dispCanvas()
       }
   },
@@ -238,18 +236,14 @@ methods: {
               if (blue >= this.x2B) {
                   blue = this.y2B
               }
-              // Изменяем значения RGB (в этом примере инвертируем цвета)
               data[i] = red;
               data[i + 1] = green;
               data[i + 2] = blue;
           }
           ctx.putImageData(imageData2, 0, 0);
 }.bind(this, this.x1R, this.x2R, this.y1R, this.y2R, this.x1G, this.x2G, this.y1G, this.y2G, this.x1B, this.x2B, this.y1B, this.y2B);
-
-      // Загружаем изображение
   
   img.src = imageData;
-  // this.changePixelColors();
   },
   setGraf(color){
       if (color == "blueCube") {
@@ -301,7 +295,6 @@ methods: {
       
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Красная прямая линия под углом 45° из точки (0, 0)
       ctx.beginPath();
       ctx.moveTo(0, canvas.height);
       ctx.lineTo(canvas.width, 0);
@@ -316,7 +309,6 @@ methods: {
       ctx.arc(x2, y2, 5, 0, 2 * Math.PI);
       ctx.fill();
 
-      // Рисуем отрезки
       ctx.beginPath();
       ctx.moveTo(0, y1);
       ctx.lineTo(x1, y1);
@@ -362,17 +354,6 @@ justify-content: center;
 display: flex;
 margin-bottom: 10px;
 }
-/* .modal-backdrop {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
 .content {
 display: flex;
 flex-direction: row;
@@ -380,10 +361,7 @@ flex-direction: row;
 .modal {
 overflow: scroll;
 max-height: 90%;
-/* width: 500px; */
 position: fixed;
-/* right: 0; */
-/* height: 400px; */
 background: #FFFFFF;
 box-shadow: 2px 2px 20px 1px;
 overflow-x: auto;
@@ -399,12 +377,6 @@ min-height: 50px;
 display: flex;
 flex-direction: column;
 }
-/* #resizePercentageTitle{
-width: 300px;
-}
-#resizePercentage{
-width: 40px;
-} */
 .buttons-wrapper {
 display: flex;
 flex-direction: row;
