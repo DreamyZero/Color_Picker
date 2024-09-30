@@ -3,7 +3,7 @@
       <div class="modal">
       <section class="modal-body">
           <slot name="body">
-              <label for="imageInput">Добавить файл:</label>
+              <label for="imageInput">Изменить файл:</label>
               <input type="file" id="imageInput" ref="fileInput" @change="handleFileInputChange">
               <label for="urlInput">Или укажите URL:</label>
               <input type="text" id="urlInput" v-model="imageUrl">

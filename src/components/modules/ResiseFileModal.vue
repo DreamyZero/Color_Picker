@@ -137,13 +137,13 @@ export default {
           this.newHeight =  Math.round(this.newWidth * this.ratio);
           const heightInput = document.getElementById("height");
           if (heightInput) {
-              console.log("НАйден",heightInput);
+              console.log("Найден",heightInput);
               document.getElementById("height").value = this.newHeight;
           }
           console.log(this.ratio,"this.imageHeight",this.imageHeight)
       },
       loadImage() {
-          console.log("метод выполнинлся")
+          console.log("com")
           this.imageData = localStorage.getItem("start_image");
           const image = new Image();
           image.onload = () => {
