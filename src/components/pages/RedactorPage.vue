@@ -23,6 +23,9 @@
                  <li class="menu-elem menu-button" v-on:click="showModal_Brightness">
                     <p class="add-image">Изменить яркость изображения.</p>
                 </li>
+                <li class="menu-elem menu-button" v-on:click="showModal_Blur">
+                    <p class="add-image">Размытия</p>
+                </li>
                  <li class="menu">
                      <select v-model="scale" @change="changeScale">
                          <option v-for="(scaleOption, index) in scaleOptions" :value="scaleOption" :key="index">{{ scaleOption }}%</option>
@@ -35,6 +38,7 @@
          <resiseFileModal ref="resiseFileModal"></resiseFileModal>
          <modalAddFile v-show="isModalVisible" @close="closeModal_AddFile"></modalAddFile>
          <brightnessModal ref="brightnessModal"></brightnessModal>
+         <blurModal ref="blurModal"></blurModal>
  
          <!-- Контейнер для холста -->
          <div class="canvas-container">
@@ -58,13 +62,15 @@
  <script>
  import modalAddFile from '../modules/AddFileModal.vue';
  import resiseFileModal from '../modules/ResiseFileModal.vue';
- import brightnessModal from '../modules/BrightnessModal.vue'
+ import brightnessModal from '../modules/BrightnessModal.vue';
+ import blurModal from '../modules/BlurModal.vue'
  
  export default {
      components: {
          modalAddFile,
          resiseFileModal,
          brightnessModal,
+         blurModal,
      },
      data() {
          return {
@@ -113,6 +119,10 @@
          closeModal_AddFile() {
              this.isModalVisible = false;
          },
+         showModal_Blur(){
+            this.$refs.blurModal.openModal();
+            this.isModalBlurVisible = true
+        },
          showModal_Brightness(){
             console.log("FHFHFHFH")
             this.$refs.brightnessModal.openModal();

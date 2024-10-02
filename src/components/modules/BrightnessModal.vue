@@ -28,7 +28,7 @@
           </div>
       </div>
       <div class="buttons-wrapper">
-          <button class="btn-green" @click="handleSubmitt">Отправить</button>
+          <button class="apply" @click="handleSubmitt">Отправить</button>
           <button class="apply" @click="closeModal">Закрыть окно.</button>
       </div>
   </div>
@@ -81,7 +81,7 @@ methods: {
       const canvas = document.getElementById('prewCanvas');
       const ctx = canvas.getContext('2d');
       const img = new Image();
-      console.log("А сюда?",canvas.width)
+      console.log("yep?",canvas.width)
       img.onload = function() {
           console.log("img.width",img.width)
           canvas.width = img.width
@@ -145,7 +145,6 @@ methods: {
               if (blue >= this.x2B) {
                   blue = this.y2B
               }
-              // Изменяем значения RGB (в этом примере инвертируем цвета)
               data[i] = red;
               data[i + 1] = green;
               data[i + 2] = blue;
@@ -156,7 +155,6 @@ methods: {
           
       }.bind(this, this.x1R, this.x2R, this.y1R, this.y2R, this.x1G, this.x2G, this.y1G, this.y2G, this.x1B, this.x2B, this.y1B, this.y2B);
 
-          // Загружаем изображение
       
       img.src = imageData;
       location.reload();
@@ -182,7 +180,6 @@ methods: {
           const imageHeight = img.height;
           const scale = Math.min(canvasWidth / imageWidth, canvasHeight / imageHeight);
           
-          // Масштабируем и рисуем изображение
           ctx.drawImage(img, 0, 0, imageWidth * scale, imageHeight * scale);
           const imageData2 = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = imageData2.data;
