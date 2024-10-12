@@ -10,8 +10,8 @@
         </select>
       </div>
       <div class="modal-elem" v-if="resizeMethod === 'percentage'">
-        <p id="resizePercentageTitle">Укажите процентное изменение размера:</p>
-        <input type="number" id="resizePercentage" v-model="resizePercentage" min="1" />
+        Ширина (%):<input type="number" v-model="resizeWidthPercentage" min="1" />
+        Высота (%):<input type="number" v-model="resizeHeightPercentage" min="1" />
       </div>
       <div class="modal-elem" v-else-if="resizeMethod === 'pixels'">
         <div>
@@ -40,121 +40,126 @@
 
 <script>
 export default {
-name: 'resiseFileModal',
-data() {
-  return {
-    isVisible: false,
-    resizeMethod: 'percentage',
-    resizePercentage: 100,
-    newWidth: 0,
-    newHeight: 0,
-    maintainAspectRatio: true,
-    interpolationAlgorithm: 'nearestNeighbor',
-    image: null,
-    tooltipVisible: false,
-    ratio: 1,
-    sharedCanvasCtx: null, // общий контекст для работы с изображениями
-  };
-},
-mounted() {
-  this.loadImage();
-},
-methods: {
-  loadImage() {
-    const imageData = localStorage.getItem("start_image");
-    if (imageData) {
-      this.image = new Image();
-      this.image.src = imageData;
-      this.image.onload = () => {
-        this.newWidth = this.image.width;
-        this.newHeight = this.image.height;
-        this.ratio = this.newHeight / this.newWidth;
-        console.log(`Image loaded: width=${this.newWidth}, height=${this.newHeight}`);
-      };
-      this.image.onerror = () => {
-        console.error("Ошибка загрузки изображения.");
-      };
-    } else {
-      console.error("Изображение не найдено в localStorage.");
-    }
-  },
-  openModal() {
-    this.isVisible = true;
-  },
-  closeModal() {
-    this.isVisible = false;
-    this.$emit('close');
-  },
-  applyChanges() {
-    if (!this.image) {
-      console.error("Изображение не загружено.");
-      return;
-    }
-
-    const scaleFactor = this.resizeMethod === 'percentage' ? this.resizePercentage / 100 : 1;
-    const targetWidth = Math.round(this.newWidth * scaleFactor);
-    const targetHeight = Math.round(this.newHeight * scaleFactor);
-
-    console.log(`Applying changes: targetWidth=${targetWidth}, targetHeight=${targetHeight}`);
-    this.nearestNeighborScaling(targetWidth, targetHeight);
-  },
-  nearestNeighborScaling(newWidth, newHeight) {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = newWidth;
-    canvas.height = newHeight;
-
-    const processRow = (y) => {
-      for (let x = 0; x < newWidth; x++) {
-        const srcX = Math.round(x * (this.image.width / newWidth));
-        const srcY = Math.round(y * (this.image.height / newHeight));
-        const pixel = this.getPixel(srcX, srcY);
-        ctx.fillStyle = `rgb(${pixel.r}, ${pixel.g}, ${pixel.b})`;
-        ctx.fillRect(x, y, 1, 1);
-      }
-
-      // После завершения текущей строки продолжаем обработку следующей строки
-      if (y < newHeight - 1) {
-        requestAnimationFrame(() => processRow(y + 1)); // Асинхронная обработка для следующих строк
-      } else {
-        const startImage = canvas.toDataURL('image/jpeg');
-        localStorage.setItem("start_image", startImage);
-        console.log("Image resized and saved to localStorage.");
-      }
+  name: 'resiseFileModal',
+  data() {
+    return {
+      isVisible: false,
+      resizeMethod: 'percentage',
+      resizeWidthPercentage: 100,  // Процент для ширины
+      resizeHeightPercentage: 100, // Процент для высоты
+      newWidth: 0,
+      newHeight: 0,
+      maintainAspectRatio: true,
+      interpolationAlgorithm: 'nearestNeighbor',
+      image: null,
+      tooltipVisible: false,
+      ratio: 1,
+      sharedCanvasCtx: null, // общий контекст для работы с изображениями
     };
+  },
+  mounted() {
+    this.loadImage();
+  },
+  methods: {
+    loadImage() {
+      const imageData = localStorage.getItem("start_image");
+      if (imageData) {
+        this.image = new Image();
+        this.image.src = imageData;
+        this.image.onload = () => {
+          this.newWidth = this.image.width;
+          this.newHeight = this.image.height;
+          this.ratio = this.newHeight / this.newWidth;
+          console.log(`Image loaded: width=${this.newWidth}, height=${this.newHeight}`);
+        };
+        this.image.onerror = () => {
+          console.error("Ошибка загрузки изображения.");
+        };
+      } else {
+        console.error("Изображение не найдено в localStorage.");
+      }
+    },
+    openModal() {
+      this.isVisible = true;
+    },
+    closeModal() {
+      this.isVisible = false;
+      this.$emit('close');
+    },
+    applyChanges() {
+      if (!this.image) {
+        console.error("Изображение не загружено.");
+        return;
+      }
 
-    processRow(0); // Начинаем обработку с первой строки
-  },
-  getPixel(x, y) {
-    if (!this.sharedCanvasCtx) {
-    const canvas = document.createElement('canvas');
-   canvas.width = this.image.width;
-    canvas.height = this.image.height;
-    this.sharedCanvasCtx = canvas.getContext('2d', { willReadFrequently: true });
-    this.sharedCanvasCtx.drawImage(this.image, 0, 0);
-}
+      let targetWidth, targetHeight;
 
-// Чтение пикселя
-  const data = this.sharedCanvasCtx.getImageData(x, y, 1, 1).data;
-  return { r: data[0], g: data[1], b: data[2] };
-},
-  showTooltip() {
-    this.tooltipVisible = true;
+      if (this.resizeMethod === 'percentage') {
+        targetWidth = Math.round(this.newWidth * (this.resizeWidthPercentage / 100));
+        targetHeight = Math.round(this.newHeight * (this.resizeHeightPercentage / 100));
+      } else {
+        targetWidth = this.newWidth;
+        targetHeight = this.newHeight;
+      }
+
+      console.log(`Applying changes: targetWidth=${targetWidth}, targetHeight=${targetHeight}`);
+      this.nearestNeighborScaling(targetWidth, targetHeight);
+    },
+    nearestNeighborScaling(newWidth, newHeight) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+
+      const processRow = (y) => {
+        for (let x = 0; x < newWidth; x++) {
+          const srcX = Math.round(x * (this.image.width / newWidth));
+          const srcY = Math.round(y * (this.image.height / newHeight));
+          const pixel = this.getPixel(srcX, srcY);
+          ctx.fillStyle = `rgb(${pixel.r}, ${pixel.g}, ${pixel.b})`;
+          ctx.fillRect(x, y, 1, 1);
+        }
+
+        if (y < newHeight - 1) {
+          requestAnimationFrame(() => processRow(y + 1));
+        } else {
+          const startImage = canvas.toDataURL('image/jpeg');
+          localStorage.setItem("start_image", startImage);
+          console.log("Image resized and saved to localStorage.");
+        }
+      };
+
+      processRow(0);
+    },
+    getPixel(x, y) {
+      if (!this.sharedCanvasCtx) {
+        const canvas = document.createElement('canvas');
+        canvas.width = this.image.width;
+        canvas.height = this.image.height;
+        this.sharedCanvasCtx = canvas.getContext('2d', { willReadFrequently: true });
+        this.sharedCanvasCtx.drawImage(this.image, 0, 0);
+      }
+
+      const data = this.sharedCanvasCtx.getImageData(x, y, 1, 1).data;
+      return { r: data[0], g: data[1], b: data[2] };
+    },
+    showTooltip() {
+      this.tooltipVisible = true;
+    },
+    hideTooltip() {
+      this.tooltipVisible = false;
+    },
+    updateImageWidth() {
+      if (this.maintainAspectRatio) {
+        this.newHeight = Math.round(this.newWidth * this.ratio);
+      }
+    },
+    updateImageHeight() {
+      if (this.maintainAspectRatio) {
+        this.newWidth = Math.round(this.newHeight / this.ratio);
+      }
+    },
   },
-  hideTooltip() {
-    this.tooltipVisible = false;
-  },
-  updateImageWidth() {
-    if (this.maintainAspectRatio) {
-      this.newHeight = Math.round(this.newWidth * this.ratio);
-    }
-  },
-  updateImageHeight() {
-    if (this.maintainAspectRatio) {
-      this.newWidth = Math.round(this.newHeight / this.ratio);
-    }
-  },
-},
 };
 </script>
 
@@ -218,4 +223,3 @@ methods: {
   margin-left: 10px;
 }
 </style>
-
